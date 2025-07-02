@@ -97,6 +97,7 @@ http://localhost:8080/swagger-ui/index.html
 
 
 6. Funcionamiento de la aplicación:
+- Ejemplos de cómo usar cada endpoint
 
 1. Creación de un usuario:
 - ## POST /usuario/crearCuenta -> Devuelve el nombre del usuario creado.
