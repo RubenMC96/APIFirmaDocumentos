@@ -23,16 +23,15 @@
 
 3. Descarga e instalación de Maven
 
-1. Accede a https://maven.apache.org/download.cgi
-2. Descarga la versión para tu sistema operativo, en formato .zip o tar.gz.
-3. Descomprime el .zip o tar.gz en la carpeta en la que quieras realizar la instalación.
-Ej: C:\maven
-4. Al igual que en el proceso de configuración del JDK, accede a edición de variables del entorno y crea una variable nueva llamada MAVEN_HOME con el valor de la ruta de la carpeta en la que realizaste la instalación. teniendo en cuenta que debes incluir la carpeta bin.
-Ej: C\maven\ ... \bin
-
-5. Editar la variable Path y añadir: %MAVEN_HOME%\bin
-6. Verifica la instalación abriendo una terminal o consola y ejecutando:mvn -v
-Deberías de ver algo como: Apache Maven X.X.X
+    1. Accede a https://maven.apache.org/download.cgi
+    2. Descarga la versión para tu sistema operativo, en formato .zip o tar.gz.
+    3. Descomprime el .zip o tar.gz en la carpeta en la que quieras realizar la instalación.
+    Ej: C:\maven
+    4. Al igual que en el proceso de configuración del JDK, accede a edición de variables del entorno y crea una variable nueva llamada MAVEN_HOME con el valor de la ruta de la carpeta en la que realizaste la     instalación. teniendo en cuenta que debes incluir la carpeta bin.
+    Ej: C\maven\ ... \bin
+    5. Editar la variable Path y añadir: %MAVEN_HOME%\bin
+    6. Verifica la instalación abriendo una terminal o consola y ejecutando:mvn -v
+    Deberías de ver algo como: Apache Maven X.X.X
 
 4. Descargar un IDE
 - IntelliJ IDEA Community: https://www.jetbrains.com/idea/download/
@@ -43,60 +42,63 @@ Deberías de ver algo como: Apache Maven X.X.X
 
 - Se recomienda Visual Studio Code, porque incluye un cliente de Git integrado y facilita el proceso de clonación del repositorio.
 - En el caso de elegir otro IDE, habría que realizar el proceso de descarga e instalación de Git.
-1. Windows: Descarga e instala Git for Windows desde https://git-scm.com/download/win
+    1. Windows: Descarga e instala Git for Windows desde https://git-scm.com/download/win
 
-macOS:
+        macOS:
 
-Con Homebrew: brew install git
+        Con Homebrew: brew install git
 
-O desde el instalador en https://git-scm.com/download/mac
+        O desde el instalador en https://git-scm.com/download/mac
 
-Linux (Debian/Ubuntu):
-sudo apt update
-sudo apt install git
+        Linux (Debian/Ubuntu):
+       ```
+            sudo apt update
+            sudo apt install git
+       ```
 
-Luego, comprueba la instalación ejecutando en terminal: git --version
-
+    Luego, comprueba la instalación ejecutando en terminal:
+      ```
+        git --version
+  ```
 2. Configurar Git 
 - Ejemplo: 2. IntelliJ IDEA
 
-1. Abre IntelliJ IDEA y ve a File > Settings (Windows/Linux) o IntelliJ IDEA > Preferences (macOS).
+    1. Abre IntelliJ IDEA y ve a File > Settings (Windows/Linux) o IntelliJ IDEA > Preferences (macOS).
 
-2. En el panel, selecciona Version Control > Git.
+    2. En el panel, selecciona Version Control > Git.
 
-3. En “Path to Git executable”, indica la ruta de git en tu sistema (por ejemplo, C:\Program Files\Git\bin\git.exe).
+    3. En “Path to Git executable”, indica la ruta de git en tu sistema (por ejemplo, C:\Program Files\Git\bin\git.exe).
 
-4. Haz clic en Test para verificar que IntelliJ detecta correctamente Git.
-
+    4. Haz clic en Test para verificar que IntelliJ detecta correctamente Git.
+       
 5. Clonar el repositorio.
-1. Abre tu terminal o la terminal integrada del IDE.
-```markdown
-git clone https://github.com/RubenMC96/APIFirmaDocumentos.git
-cd APIFirmaDocumentos
-```
-2. Compilar la aplicación
-```
-mvn clean install
-```
-3. Ejecutar la aplicación
-- Acceder al archivo: APIFirmaDocumentos-> src-> main-> java\ com \ firmaDoc -> FirmaDocApplication.java.
-Hacer click en **Run** 
-![alt text](image.png)
-4. La ruta de acceso al servidor es:
-```
-http://localhost:8080
-```
-- La aplicación al ser una API, no dispone de parte visual para el cliente, por lo que si se accede directamente se encontrará un login en el cual no podrá acceder.
-- La ruta del servidor se usará para acceder al gestor de base de datos.
-```
-http://localhost:8080/h2-console
-```
-- La documentación de los requisitos y detalles de la api se pueden consultar en:
-```
-http://localhost:8080/swagger-ui/index.html
-```
-
-
+    1. Abre tu terminal o la terminal integrada del IDE.
+    ```markdown
+    git clone https://github.com/RubenMC96/APIFirmaDocumentos.git
+    cd APIFirmaDocumentos
+    ```
+    2. Compilar la aplicación
+    ```
+    mvn clean install
+    ```
+    3. Ejecutar la aplicación
+        - Acceder al archivo: APIFirmaDocumentos-> src-> main-> java\ com \ firmaDoc -> FirmaDocApplication.java.
+        Hacer click en **Run** 
+        ![alt text](image.png)
+    4. La ruta de acceso al servidor es:
+    ```
+    http://localhost:8080
+    ```
+    - La aplicación al ser una API, no dispone de parte visual para el cliente, por lo que si se accede directamente se encontrará un login en el cual no podrá acceder.
+    - La ruta del servidor se usará para acceder al gestor de base de datos.
+    ```
+    http://localhost:8080/h2-console
+    ```
+    - La documentación de los requisitos y detalles de la api se pueden consultar en:
+    ```
+    http://localhost:8080/swagger-ui/index.html
+    ```
+    
 6. Funcionamiento de la aplicación:
 - Ejemplos de cómo usar cada endpoint
 
