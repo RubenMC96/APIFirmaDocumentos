@@ -10,12 +10,12 @@
 - Navegador web moderno, como Chrome,Mozilla o Brave.
 
 2. Descarga e instalación de JDK (Java)
-1. Accede a https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
-2. Descarga la versión Java SE 17 o superior para tu sistema operativo.
-3. Ejecuta el instalador y sigue las indicaciones por defecto.
-4. Accede a Editar las variables de entorno del sistema -> Variables de entorno -> Variables del sistema -> Nueva -> En el nombre de la variable indicar: JAVA_HOME, y el valor de la variable: la ruta en la que el que has instalado el JDK previamente, Ejemplo: C:\Program\Java\jdk-17.0.9
-5. (Para Windows o macOS) Buscar en la misma lista (Variables del sistema) la variable Path, presionar el botón de editar y añadir %JAVA_HOME%\bin
-y aceptar.
+  1. Accede a https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
+  2. Descarga la versión Java SE 17 o superior para tu sistema operativo.
+  3. Ejecuta el instalador y sigue las indicaciones por defecto.
+  4. Accede a Editar las variables de entorno del sistema -> Variables de entorno -> Variables del sistema -> Nueva -> En el nombre de la variable indicar: JAVA_HOME, y el valor de la variable: la ruta en la que   el que has instalado el JDK previamente, Ejemplo: C:\Program\Java\jdk-17.0.9
+  5. (Para Windows o macOS) Buscar en la misma lista (Variables del sistema) la variable Path, presionar el botón de editar y añadir %JAVA_HOME%\bin
+  y aceptar.
 
 6. Verifica la instalación abriendo una terminal o consola y ejecutando: java -version
 Deberías de ver algo como: java version "17.X.X".
