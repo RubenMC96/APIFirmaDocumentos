@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,68 +49,78 @@ class SignatureRestControllerTest {
     }
 
     @Test
-void testFirmarDocumento_Correcto() throws Exception {
+    void testFirmarDocumento_Correcto() throws Exception {
+        String documentoTxt   = "Documento a firmar";
+        String token          = "token";
+        String clavePrivada   = "clavePrivadaY";
+        String expectedFirma  = "firmaGenerada";
 
-    String documentoTxt   = "Documento a firmar";
-    String clavePublica   = "clavePublicaX";
-    String clavePrivada   = "clavePrivadaY";
-    String expectedFirma  = "firmaGenerada";
+        FirmarDTO input = new FirmarDTO(documentoTxt, token);
 
-    FirmarDTO input = new FirmarDTO(documentoTxt, clavePublica);
-    Usuario usuario = new Usuario();
-    usuario.setClavePrivada(clavePrivada);
+        Usuario usuario = new Usuario();
+        usuario.setClavePrivada(clavePrivada);
+        usuario.setToken(token);
+        when(usuarioService.obtenerUsuarioByToken(eq(token)))
+            .thenReturn(usuario);
 
-    when(usuarioService.obtenerUsuarioByClavePublica(eq(clavePublica)))
-        .thenReturn(usuario);
+        when(firmaService.firmarDocumento(
+                eq(clavePrivada), any(DocumentoDTO.class)))
+            .thenReturn(expectedFirma);
 
-    when(firmaService.firmarDocumento(
-            eq(clavePrivada), any(DocumentoDTO.class)))
-        .thenReturn(expectedFirma);
+        try (MockedStatic<JwtUtil> jwtMock = Mockito.mockStatic(JwtUtil.class)) {
+            jwtMock
+                .when(() -> JwtUtil.validateToken(token))
+                .thenReturn(true);
 
-    ResponseEntity<FirmaDTO> response =
-        signatureRestController.firmarDocumento(input);
+        ResponseEntity<FirmaDTO> response =
+            signatureRestController.firmarDocumento(input);
 
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
-    FirmaDTO body = response.getBody();
-    assertNotNull(body, "El body de la respuesta no debe ser null");
+        FirmaDTO body = response.getBody();
+        assertNotNull(body);
+        assertEquals(expectedFirma, body.getFirma());
+        }
+    }
 
-    assertEquals(expectedFirma, body.getFirma());
-}
 
 @Test
 void testFirmarDocumento_Error() throws Exception {
     // Arrange
     String documentoTxt = "Documento a firmar";
-    String clavePublica = "clavePublicaX";
+    String token        = "token";
     String clavePrivada = "clavePrivadaY";
 
-    FirmarDTO input = new FirmarDTO(documentoTxt, clavePublica);
+    FirmarDTO input = new FirmarDTO(documentoTxt, token);
     Usuario usuario = new Usuario();
     usuario.setClavePrivada(clavePrivada);
+    usuario.setToken(token);
 
-    when(usuarioService.obtenerUsuarioByClavePublica(eq(clavePublica)))
+    when(usuarioService.obtenerUsuarioByToken(eq(token)))
         .thenReturn(usuario);
 
     when(firmaService.firmarDocumento(
             eq(clavePrivada), any(DocumentoDTO.class)))
         .thenThrow(new Exception("Fallo interno"));
 
-    // Act
-    ResponseEntity<FirmaDTO> response =
-        signatureRestController.firmarDocumento(input);
+    try (MockedStatic<JwtUtil> jwtMock = Mockito.mockStatic(JwtUtil.class)) {
+            jwtMock
+                .when(() -> JwtUtil.validateToken(token))
+                .thenReturn(true);
 
-    // Assert
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        ResponseEntity<FirmaDTO> response =
+            signatureRestController.firmarDocumento(input);
 
-    // Capturamos el body tras asegurar que no sea null
-    FirmaDTO body = response.getBody();
-    assertNotNull(body, "El body de la respuesta no debe ser null");
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
-    assertEquals(
-        "Error al firmar el documento",
-        body.getFirma()
-    );
+        FirmaDTO body = response.getBody();
+        assertNotNull(body, "El body de la respuesta no debe ser null");
+
+        assertEquals(
+            "Error al firmar el documento",
+            body.getFirma()
+        );
+    }
 }
 
 
@@ -118,17 +129,15 @@ void testFirmarDocumento_Error() throws Exception {
         VerificacionDTO dto = new VerificacionDTO();
         dto.setDocumento("documento a verificar");
         dto.setFirma("firmaGenerada");
-        dto.setToken("token123");
+        dto.setClavePublica("clavePublica123");
 
         
         String clavePublicaBase64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A...";
         Usuario usuario = new Usuario(1L, "prueba", null, clavePublicaBase64);
-        when(usuarioRepository.findByToken("token123"))
+        when(usuarioRepository.findByClavePublica("clavePublica123"))
             .thenReturn(usuario);
 
-        try (MockedStatic<JwtUtil> jwtMock = mockStatic(JwtUtil.class)) {
-            jwtMock.when(() -> JwtUtil.validateToken("token123"))
-                   .thenReturn(true);
+
 
             when(firmaService.verificarFirma(eq(dto), eq(clavePublicaBase64)))
                 .thenReturn(true);
@@ -138,40 +147,20 @@ void testFirmarDocumento_Error() throws Exception {
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals("Firma verificada correctamente", response.getBody());
         }
-    }
-
-    @Test
-    void testVerificarFirma_TokenInvalido() throws Exception {
-        VerificacionDTO dto = new VerificacionDTO("doc", "firma", "badToken");
-
-        when(usuarioRepository.findByToken("badToken"))
-            .thenReturn(new Usuario(2L, "usr", null, "claveAny"));
-
-        try (MockedStatic<JwtUtil> jwtMock = mockStatic(JwtUtil.class)) {
-            jwtMock.when(() -> JwtUtil.validateToken("badToken"))
-                   .thenReturn(false);
-
-            ResponseEntity<String> resp = signatureRestController.verificar(dto);
-            assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
-            assertEquals("Token no válido, genera uno nuevo", resp.getBody());
-        }
-    }
+    
 
     @Test
     void testVerificarFirma_NoVerificada() throws Exception {
-        VerificacionDTO dto = new VerificacionDTO("doc", "firmaX", "tokenX");
+        VerificacionDTO dto = new VerificacionDTO("doc", "firmaX", "clavePublica");
         Usuario usuario = new Usuario(3L, "usr2", null, "clavePubX");
-        when(usuarioRepository.findByToken("tokenX")).thenReturn(usuario);
+        when(usuarioRepository.findByClavePublica("clavePublica")).thenReturn(usuario);
 
-        try (MockedStatic<JwtUtil> jwtMock = mockStatic(JwtUtil.class)) {
-            jwtMock.when(() -> JwtUtil.validateToken("tokenX")).thenReturn(true);
-            when(firmaService.verificarFirma(eq(dto), eq("clavePubX")))
-                .thenReturn(false);
+
 
             ResponseEntity<String> resp = signatureRestController.verificar(dto);
             assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
             assertEquals("Firma no verificada", resp.getBody());
-        }
+        
     }
         
 }

@@ -83,22 +83,6 @@ public class FirmaServiceTest {
      * Se crea un documento, se genera una firma y se verifica que la firma es correcta.
      */
 
-/*  @Test
-    public void testVerificarFirma_Correcto() throws Exception {
-        
-        VerificacionDTO documento = new VerificacionDTO();
-        documento.setDocumento("Documento a verificar");
-
-        String clavePrivada = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
-
-        String firmaGenerada = firmaService.firmarDocumento(clavePrivada, new DocumentoDTO(documento.getDocumento()));
-        documento.setFirma(firmaGenerada);
-
-        boolean resultado = firmaService.verificarFirma(documento, "clavePrivada");
-        assertEquals(true, resultado);
-    
-    }*/
-
     @Test
     public void  testVerificarFirma_Correcto() throws Exception{
 
@@ -113,7 +97,7 @@ public class FirmaServiceTest {
         VerificacionDTO verificacionDTO = new VerificacionDTO();
         verificacionDTO.setDocumento(documento.getDocumento());
         verificacionDTO.setFirma(firmaGenerada);
-        verificacionDTO.setToken("token");
+        verificacionDTO.setClavePublica("clavePublica");
 
         boolean resultado = firmaService.verificarFirma(verificacionDTO, clavePublica);
         assertEquals(true, resultado);
@@ -141,7 +125,7 @@ public class FirmaServiceTest {
         VerificacionDTO verificacionDTO = new VerificacionDTO();
         verificacionDTO.setDocumento(documento.getDocumento());
         verificacionDTO.setFirma(firmaGenerada);
-        verificacionDTO.setToken("token");
+        verificacionDTO.setClavePublica("clavePublica");
 
 
 

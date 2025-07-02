@@ -39,7 +39,7 @@ public class VerificacionDTO {
         description = "Token correspondiente al usuario."
     )
 
-    private String token;
+    private String clavePublica;
 
     public VerificacionDTO() {
     }
@@ -49,10 +49,10 @@ public class VerificacionDTO {
      * @param documento Documento firmado en base64.
      * @param firma Firma generada previamente
      */
-    public VerificacionDTO(String documento, String firma,String token) {
+    public VerificacionDTO(String documento, String firma,String clavePublica) {
         this.documento = documento;
         this.firma = firma;
-        this.token = token;
+        this.clavePublica = clavePublica;
     }
 
 }

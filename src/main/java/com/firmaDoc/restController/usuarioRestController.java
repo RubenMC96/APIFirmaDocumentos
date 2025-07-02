@@ -1,7 +1,5 @@
 package com.firmaDoc.restController;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
 
@@ -138,7 +136,7 @@ public class usuarioRestController {
     public ResponseEntity<String> obtenerClavePublica(@RequestBody UsuarioDTO usuarioDTO)throws Exception{
 
         try{
-            String clavePublica = usuarioService.obtenerClavePublica(usuarioDTO);
+            String clavePublica = usuarioService.obtenerClavePublica(usuarioDTO.getNombre());
             return ResponseEntity.ok().body("Clave publica: " + clavePublica);
         }catch(Exception e){
             e.printStackTrace();

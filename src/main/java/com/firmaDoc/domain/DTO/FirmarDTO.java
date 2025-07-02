@@ -38,6 +38,6 @@ public class FirmarDTO {
      */
 
     @Schema(
-        description = "Clave pública.")
-    String clavePublica;
+        description = "Token.")
+    String token;
 }

@@ -83,16 +83,13 @@ public class UsuarioServiceImp implements UsuarioService{
 
     }
 
-    public String obtenerClavePublica(UsuarioDTO usuarioDTO) throws Exception{
+    public String obtenerClavePublica(String nombre) throws Exception{
         try{
-            Usuario usuario = usuarioRepository.findByNombre(usuarioDTO.getNombre());
+            Usuario usuario = usuarioRepository.findByNombre(nombre);
 
             if(usuario == null){
                 throw new RuntimeException("El usuario no existe");
-            }else if(!passwordEncoder.matches(usuarioDTO.getContrasena(), usuario.getContrasena())){
-
-                throw new RuntimeException("Contraseña incorrecta");
-            }   
+            }  
             return usuario.getClavePublica();   
         }catch(Exception e){
             e.printStackTrace();
@@ -100,9 +97,9 @@ public class UsuarioServiceImp implements UsuarioService{
         }
     }
 
-        public Usuario obtenerUsuarioByClavePublica(String clavePublica) throws Exception{
+        public Usuario obtenerUsuarioByToken(String token) throws Exception{
         try{
-            Usuario usuario = usuarioRepository.findByClavePublica(clavePublica);
+            Usuario usuario = usuarioRepository.findByToken(token);
 
             if(usuario == null){
                 throw new RuntimeException("El usuario no existe");
@@ -110,7 +107,7 @@ public class UsuarioServiceImp implements UsuarioService{
             return usuario;
         }catch(Exception e){
             e.printStackTrace();
-            throw new RuntimeException("Error al obtener la calve pública");
+            throw new RuntimeException("Error al el usuario por su token");
         }
     }
 

@@ -1,15 +1,10 @@
 package com.firmaDoc.restController;
 
-import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.Signature;
-import java.util.Base64;
+
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,15 +65,22 @@ public class signatureRestController {
     public ResponseEntity<FirmaDTO> firmarDocumento(@RequestBody FirmarDTO firmarDTO)throws Exception{
         
         try{
-                Usuario usuario = usuarioService.obtenerUsuarioByClavePublica(firmarDTO.getClavePublica());
-                DocumentoDTO documentoDTO = new DocumentoDTO(firmarDTO.getDocumento());
+            
+                Usuario usuario = usuarioService.obtenerUsuarioByToken(firmarDTO.getToken());
+                    if(usuario != null && JwtUtil.validateToken(usuario.getToken())){
+                    DocumentoDTO documentoDTO = new DocumentoDTO(firmarDTO.getDocumento());
 
-                String firmaBase64 = firmaService.firmarDocumento(usuario.getClavePrivada(), documentoDTO);
+                    String firmaBase64 = firmaService.firmarDocumento(usuario.getClavePrivada(), documentoDTO);
 
-                if(firmaBase64 == null || firmaBase64.isEmpty()){
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new FirmaDTO("Error al firmar el documento"));
-                }else{
-                    return ResponseEntity.status(HttpStatus.CREATED).body(new FirmaDTO(firmaBase64));
+                    if(firmaBase64 == null || firmaBase64.isEmpty()){
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new FirmaDTO("Error al firmar el documento"));
+                    }else{
+                        return ResponseEntity.status(HttpStatus.CREATED).body(new FirmaDTO(firmaBase64));
+                    }
+                }
+                
+                else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new FirmaDTO("Token no válido, genera uno nuevo"));
                 }
                 
         }catch(Exception e){
@@ -106,21 +108,14 @@ public class signatureRestController {
 
         try{
 
-            Usuario usuario = usuarioRepository.findByToken(verificacion.getToken());
+            Usuario usuario = usuarioRepository.findByClavePublica(verificacion.getClavePublica());
             
-            if(usuario != null && JwtUtil.validateToken(verificacion.getToken())){
-
                 Boolean verificado = firmaService.verificarFirma(verificacion, usuario.getClavePublica());
                 if(verificado){
                     return ResponseEntity.ok().body("Firma verificada correctamente");
                 } else {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Firma no verificada");
                 }  
-
-            }else{
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token no válido, genera uno nuevo");
-            }
-
             
         }catch(Exception e){
             e.printStackTrace();
