@@ -94,6 +94,10 @@
     ```
     http://localhost:8080/h2-console
     ```
+    - Usuario: sa
+    - Contraseña: (Vacía)
+    - ![image](https://github.com/user-attachments/assets/b8ddee37-4fca-4f40-9b1e-7004d8ba4217)
+
     - La documentación de los requisitos y detalles de la api se pueden consultar en:
     ```
     http://localhost:8080/swagger-ui/index.html
