@@ -59,7 +59,7 @@
     Luego, comprueba la instalación ejecutando en terminal:
       ```
         git --version
-  ```
+      ```
 2. Configurar Git 
 - Ejemplo: 2. IntelliJ IDEA
 
